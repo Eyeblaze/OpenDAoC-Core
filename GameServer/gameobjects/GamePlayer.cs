@@ -4563,7 +4563,29 @@ namespace DOL.GS
             }
 
             // Get Champion Experience too
-            // GainChampionExperience(expTotal);
+            GainChampionExperience(expTotal);
+
+            //catacombs characters get 50% boost if they are elligable for slash level
+            switch ((eCharacterClass)CharacterClass.ID)
+            {
+                case eCharacterClass.Heretic:
+                case eCharacterClass.Valkyrie:
+                case eCharacterClass.Warlock:
+                case eCharacterClass.Bainshee:
+                case eCharacterClass.Vampiir:
+                case eCharacterClass.MaulerAlb:
+                case eCharacterClass.MaulerHib:
+                case eCharacterClass.MaulerMid:
+                    {
+                        //we don't want to allow catacombs classes to use free levels and
+                        //have a 50% bonus
+                        if (!ServerProperties.Properties.ALLOW_CATA_SLASH_LEVEL && CanUseSlashLevel && Level < 20)
+                        {
+                            expTotal = (long)(expTotal * 1.5);
+                        }
+                        break;
+                    }
+            }
 
             if (IsLevelSecondStage)
             {
@@ -4631,6 +4653,8 @@ namespace DOL.GS
             }
 
             Out.SendUpdatePoints();
+            if (notify && arguments != null && arguments.ExpTotal > 0)
+                Notify(GameLivingEvent.GainedExperience, this, arguments);
         }
 
         /// <summary>
@@ -13508,6 +13532,25 @@ namespace DOL.GS
         {
             get { return m_minoRelic; }
             set { m_minoRelic = value; }
+        }
+        #endregion
+
+        #region Artifacts
+
+        /// <summary>
+        /// Checks if the player's class has at least one version of the artifact specified available to them.
+        /// </summary>
+        /// <param name="artifactID"></param>
+        /// <returns>True when at least one version exists, false when no versions are available.</returns>
+        public bool CanReceiveArtifact(string artifactID)
+        {
+            var possibleVersions = ArtifactMgr.GetArtifactVersions(
+                artifactID,
+                (eCharacterClass)CharacterClass.ID,
+                Realm
+            );
+
+            return possibleVersions != null && possibleVersions.Count > 0;
         }
         #endregion
 

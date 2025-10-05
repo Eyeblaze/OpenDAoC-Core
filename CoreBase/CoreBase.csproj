@@ -2,7 +2,7 @@
     <PropertyGroup>
         <BaseIntermediateOutputPath>..\build\CoreBase\$(Configuration)\</BaseIntermediateOutputPath>
         <PackageId>CoreBase</PackageId>
-        <RootNamespace>Core.Base</RootNamespace>
+        <RootNamespace>DOL</RootNamespace>
     </PropertyGroup>
     <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
     <PropertyGroup>

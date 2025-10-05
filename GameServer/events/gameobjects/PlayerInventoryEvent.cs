@@ -15,5 +15,11 @@ namespace DOL.Events
 		/// The item was just dropped
 		/// </summary>
 		public static readonly PlayerInventoryEvent ItemDropped = new PlayerInventoryEvent("PlayerInventory.ItemDropped");
-	}
+
+        /// <summary>
+        /// Fired when an item's bonus values change (e.g., artifact level-up).
+        /// </summary>
+        public static readonly PlayerInventoryEvent ItemBonusChanged =
+            new PlayerInventoryEvent("PlayerInventory.ItemBonusChanged");
+    }
 }

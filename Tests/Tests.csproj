@@ -31,12 +31,18 @@
     <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
         <RegisterForComInterop>False</RegisterForComInterop>
     </PropertyGroup>
+    <PropertyGroup>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="9.0.5" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="NUnit" Version="4.3.2" />
         <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+        <PackageReference Include="xunit" Version="2.7.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7" />
+        <PackageReference Include="FluentAssertions" Version="6.12.0" />
         <ProjectReference Include="..\CoreBase\CoreBase.csproj" Name="CoreBase" />
         <ProjectReference Include="..\CoreDatabase\CoreDatabase.csproj" Name="CoreDatabase" />
         <ProjectReference Include="..\CoreServer\CoreServer.csproj" Name="CoreServer" />

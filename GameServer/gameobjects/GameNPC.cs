@@ -28,7 +28,20 @@ namespace DOL.GS
 	public class GameNPC : GameLiving, ITranslatableObject, IPooledList<GameNPC>
 	{
 		public static readonly Logging.Logger log = Logging.LoggerManager.Create(MethodBase.GetCurrentMethod().DeclaringType);
-		private static ConcurrentDictionary<Type, Func<AbstractQuest>> _abstractQuestConstructorCache = new();
+
+        private static readonly ConcurrentDictionary<Type, Func<AbstractQuest>> _questCtorCache0
+    =	new ConcurrentDictionary<Type, Func<AbstractQuest>>();
+
+        private static readonly ConcurrentDictionary<Type, Func<GameNPC, AbstractQuest>> _questCtorCacheNpc
+            = new ConcurrentDictionary<Type, Func<GameNPC, AbstractQuest>>();
+
+        private static readonly ConcurrentDictionary<Type, Func<GamePlayer, AbstractQuest>> _questCtorCachePlayer
+            = new ConcurrentDictionary<Type, Func<GamePlayer, AbstractQuest>>();
+
+        private static readonly ConcurrentDictionary<Type, Func<GameLiving, AbstractQuest>> _questCtorCacheLiving
+            = new ConcurrentDictionary<Type, Func<GameLiving, AbstractQuest>>();
+
+        private static ConcurrentDictionary<Type, Func<AbstractQuest>> _abstractQuestConstructorCache = new();
 
 		private const int VISIBLE_TO_PLAYER_SPAN = 60000;
 
@@ -1530,41 +1543,92 @@ namespace DOL.GS
 			get { return m_questListToGive; }
 		}
 
-		/// <summary>
-		/// Adds a scripted quest type to the npc questlist
-		/// </summary>
-		/// <param name="questType">The quest type to add</param>
-		/// <returns>true if added, false if the npc has already the quest!</returns>
-		public void AddQuestToGive(Type questType)
-		{
-			lock (_questListToGiveLock)
-			{
-				if (HasQuest(questType) != null)
-					return;
+        /// <summary>
+        /// Adds a scripted quest type to the npc questlist
+        /// </summary>
+        /// <param name="questType">The quest type to add</param>
+        /// <returns>true if added, false if the npc has already the quest!</returns>
+        public void AddQuestToGive(Type questType)
+        {
+            lock (_questListToGiveLock)
+            {
+                if (HasQuest(questType) != null)
+                    return;
 
-				AbstractQuest newQuest = null;
+                AbstractQuest newQuest = null;
 
-				try
-				{
-					newQuest = _abstractQuestConstructorCache.GetOrAdd(questType, (key) => CompiledConstructorFactory.CompileConstructor(key, []) as Func<AbstractQuest>)();
-				}
-				catch (Exception e)
-				{
-					if (log.IsErrorEnabled)
-						log.Error(e);
-				}
+                try
+                {
+                    // 1) Bevorzugt: Ctor(GameNPC)
+                    var ciNpc = questType.GetConstructor(new[] { typeof(GameNPC) });
+                    if (ciNpc != null)
+                    {
+                        var factoryNpc = _questCtorCacheNpc.GetOrAdd(questType, key =>
+                            CompiledConstructorFactory.CompileConstructor(key, new[] { typeof(GameNPC) }) as Func<GameNPC, AbstractQuest>);
 
-				if (newQuest != null)
-					m_questListToGive.Add(newQuest);
-			}
-		}
+                        if (factoryNpc != null)
+                            newQuest = factoryNpc(this);
+                    }
+                    else
+                    {
+                        // 2) Fallback: Ctor() parameterlos
+                        var ci0 = questType.GetConstructor(Type.EmptyTypes);
+                        if (ci0 != null)
+                        {
+                            var factory0 = _questCtorCache0.GetOrAdd(questType, key =>
+                                CompiledConstructorFactory.CompileConstructor(key, Type.EmptyTypes) as Func<AbstractQuest>);
 
-		/// <summary>
-		/// removes a scripted quest from this npc
-		/// </summary>
-		/// <param name="questType">The questType to remove</param>
-		/// <returns>true if added, false if the npc has already the quest!</returns>
-		public bool RemoveQuestToGive(Type questType)
+                            if (factory0 != null)
+                                newQuest = factory0();
+                        }
+                        else
+                        {
+                            // 3) Ctor(GamePlayer) – NICHT instantiieren beim Binden (sonst NRE, z.B. StoneOfAtlantis)
+                            var ciPlayer = questType.GetConstructor(new[] { typeof(GamePlayer) });
+                            if (ciPlayer != null)
+                            {
+                                if (log.IsDebugEnabled)
+                                    log.Debug($"[AddQuestToGive] Skip instantiation for {questType.FullName} (GamePlayer ctor only) – will be created per-player at runtime.");
+                                return; // <-- WICHTIG: NICHTS anlegen; keine "Typprobe" mit null
+                            }
+                            else
+                            {
+                                // 4) Fallback: Ctor(GameLiving)
+                                var ciLiving = questType.GetConstructor(new[] { typeof(GameLiving) });
+                                if (ciLiving != null)
+                                {
+                                    var factoryLiving = _questCtorCacheLiving.GetOrAdd(questType, key =>
+                                        CompiledConstructorFactory.CompileConstructor(key, new[] { typeof(GameLiving) }) as Func<GameLiving, AbstractQuest>);
+
+                                    if (factoryLiving != null)
+                                        newQuest = factoryLiving(this);
+                                }
+                                else
+                                {
+                                    throw new InvalidOperationException(
+                                        $"Type {questType.FullName} does not have a supported constructor ((GameNPC) or () or (GamePlayer) or (GameLiving)).");
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (log.IsErrorEnabled)
+                        log.Error(e);
+                }
+
+                if (newQuest != null)
+                    m_questListToGive.Add(newQuest);
+            }
+        }
+
+        /// <summary>
+        /// removes a scripted quest from this npc
+        /// </summary>
+        /// <param name="questType">The questType to remove</param>
+        /// <returns>true if added, false if the npc has already the quest!</returns>
+        public bool RemoveQuestToGive(Type questType)
 		{
 			lock (_questListToGiveLock)
 			{

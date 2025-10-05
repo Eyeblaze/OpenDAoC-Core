@@ -87,10 +87,14 @@ namespace DOL.Events
 		/// The EnemyKilled event is fired whenever the living kill something
 		/// </summary>
 		public static readonly GameLivingEvent EnemyKilled = new GameLivingEvent("GameLiving.EnemyKilled");
-		/// <summary>
-		/// The GainRealmPoints event is fired whenever the living gains realm points
-		/// </summary>
-		public static readonly GameLivingEvent GainedRealmPoints = new GameLivingEvent("GameLiving.GainedRealmPoints");
+        /// <summary>
+        /// The GainedExperience event is fired whenever the living gains experience
+        /// </summary>
+        public static readonly GameLivingEvent GainedExperience = new GameLivingEvent("GameLiving.GainedExperience");
+        /// <summary>
+        /// The GainRealmPoints event is fired whenever the living gains realm points
+        /// </summary>
+        public static readonly GameLivingEvent GainedRealmPoints = new GameLivingEvent("GameLiving.GainedRealmPoints");
 		public static readonly GameLivingEvent GainedBountyPoints = new GameLivingEvent("GameLiving.GainedBountyPoints");
 		/// <summary>
 		/// The Dying event is fired just before the living died

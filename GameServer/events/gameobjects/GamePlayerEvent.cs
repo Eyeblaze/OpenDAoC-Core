@@ -92,13 +92,13 @@ namespace DOL.Events
 		/// </summary>
 		public static readonly GamePlayerEvent LevelSecondStage = new GamePlayerEvent("GamePlayer.LevelSecondStage");
 		/// <summary>
-		/// The OnLevelSecondStage event is fired whenever the player gains experience for next level
-		/// </summary>
-		public static readonly GamePlayerEvent LevelUp = new GamePlayerEvent("GamePlayer.LevelUp");
-		/// <summary>
-		/// The AcceptQuest event is fired whenever the player accepts a quest offer generated via BaseQuestPart.AddAction(eActionType.OfferQuest)
-		/// </summary>
-		public static readonly GamePlayerEvent AcceptQuest = new GamePlayerEvent("GamePlayer.AcceptQuest");
+        /// The OnLevelSecondStage event is fired whenever the player gains experience for next level
+        /// </summary>
+        public static readonly GamePlayerEvent LevelUp = new GamePlayerEvent("GamePlayer.LevelUp");
+        /// <summary>
+        /// The AcceptQuest event is fired whenever the player accepts a quest offer generated via BaseQuestPart.AddAction(eActionType.OfferQuest)
+        /// </summary>
+        public static readonly GamePlayerEvent AcceptQuest = new GamePlayerEvent("GamePlayer.AcceptQuest");
 		/// <summary>
 		/// The DeclineQuest event is fired whenever the player declines a quest offer generated via BaseQuestPart.AddAction(eActionType.OfferQuest)
 		/// </summary>

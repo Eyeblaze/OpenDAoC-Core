@@ -481,8 +481,13 @@ namespace DOL.GS
 				if (!InitComponent(BehaviourMgr.Init(), "Behaviour Manager"))
 					return false;
 
-				//Load the quest managers if enabled
-				if (Properties.LOAD_QUESTS)
+                //---------------------------------------------------------------
+                //Load ArtifactMgr manager
+                if (!InitComponent(ArtifactMgr.Init(), "Artifact Manager")) 
+					return false;
+
+                //Load the quest managers if enabled
+                if (Properties.LOAD_QUESTS)
 				{
 					if (!InitComponent(QuestMgr.Init(), "Quest Manager"))
 						return false;
