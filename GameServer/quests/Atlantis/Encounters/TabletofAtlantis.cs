@@ -29,12 +29,12 @@ namespace DOL.GS.Quests.Atlantis.Encounters
 	/// Encounter for the Atlantis Tablet artifact.
 	/// </summary>
 	/// <author>Aredhel</author>
-	public class AtlantisTablet : ArtifactEncounter
+	public class TabletofAtlantis : ArtifactEncounter
 	{
-		public AtlantisTablet(GamePlayer questingPlayer)
+		public TabletofAtlantis(GamePlayer questingPlayer)
 			: base(questingPlayer) { }
 
-		public AtlantisTablet(GamePlayer questingPlayer, DbQuest dbQuest)
+		public TabletofAtlantis(GamePlayer questingPlayer, DbQuest dbQuest)
 			: base(questingPlayer, dbQuest) { }
 
 		/// <summary>

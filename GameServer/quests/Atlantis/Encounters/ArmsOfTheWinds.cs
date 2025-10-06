@@ -42,7 +42,7 @@ namespace DOL.GS.Quests.Atlantis.Encounters
 		/// </summary>
 		public override string Name
 		{
-			get { return "Arms of the Wind Encounter"; }
+			get { return "Arms of the Winds Encounter"; }
 		}
 	}
 }

@@ -16,7 +16,7 @@ namespace DOL.GS.Atlantis
     public static class ArtifactPreloader
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
+        public static int LastBoundCount { get; private set; } = 0;
         private static bool _boundOnce = false;
         private static readonly object _lock = new();
 
@@ -108,8 +108,9 @@ namespace DOL.GS.Atlantis
                     log.Warn($"ArtifactPreloader: {notFound.Count} QuestIDs konnten nicht zu Typen aufgelöst werden. Beispiele: {sample}");
                 }
 
+                LastBoundCount = wired;
                 log.Info($"ArtifactPreloader: Wiring complete – {wired} ArtifactQuests gebunden (beim Serverstart).");
-                _boundOnce = true;
+
             }
         }
 

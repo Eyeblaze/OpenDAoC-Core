@@ -29,12 +29,12 @@ namespace DOL.GS.Quests.Atlantis.Encounters
 	/// Encounter for the Stone of Atlantis artifact.
 	/// </summary>
 	/// <author>Aredhel</author>
-	public class StoneOfAtlantis : ArtifactEncounter
+	public class StoneofAtlantis : ArtifactEncounter
 	{
-		public StoneOfAtlantis(GamePlayer questingPlayer)
+		public StoneofAtlantis(GamePlayer questingPlayer)
 			: base(questingPlayer) { }
 
-		public StoneOfAtlantis(GamePlayer questingPlayer, DbQuest dbQuest)
+		public StoneofAtlantis(GamePlayer questingPlayer, DbQuest dbQuest)
 			: base(questingPlayer, dbQuest) { }
 
 		/// <summary>

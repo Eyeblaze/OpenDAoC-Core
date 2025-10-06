@@ -35,7 +35,15 @@ namespace DOL.GS.Atlantis
             try
             {
                 ArtifactPreloader.BindAllArtifacts(); // idempotent
-                log.Info("ArtifactScholarPreloader: scholars wired.");
+                var total = 0;
+                try
+                {
+                    var all = ArtifactMgr.GetAllArtifacts();
+                    if (all != null) total = System.Linq.Enumerable.Count(all);
+                }
+                catch { /* not fatal */ }
+
+                log.Info($"ArtifactScholarPreloader: Wiring Complete: Bound {total} Artifacts to scholars");
             }
             catch (Exception ex)
             {
